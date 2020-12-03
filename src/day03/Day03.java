@@ -10,7 +10,7 @@ public class Day03 {
         int product = 1;
 
         for (int[] slope : slopes) {
-            int trees = forest.treesOnSlope(slope);
+            int trees = forest.treesOnSlopeFor(slope);
             System.out.printf("%d trees on slope %s\n", trees, Arrays.toString(slope));
             product *= trees;
         }

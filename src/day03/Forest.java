@@ -33,7 +33,7 @@ public class Forest {
         }
     }
 
-    public int treesOnSlope(int[] slope) {
+    public int treesOnSlopeWhile(int[] slope) {
         int trees = 0;
         int[] position = {0, 0};
 
@@ -44,6 +44,19 @@ public class Forest {
             position[0] += slope[0];
             position[1] += slope[1];
         }
+        return trees;
+    }
+
+    public int treesOnSlopeFor(int[] slope) {
+        int trees = 0;
+
+        for (int y = 0; y < height; y += slope[1]) {
+            int x = (y / slope[1]) * slope[0] % width;
+            if (lines.get(y).charAt(x) == '#') {
+                trees += 1;
+            }
+        }
+
         return trees;
     }
 }
