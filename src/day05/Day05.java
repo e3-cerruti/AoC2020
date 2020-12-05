@@ -12,6 +12,7 @@ public class Day05 {
 
         int result = Integer.MIN_VALUE;
         ArrayList<Integer> seatList = new ArrayList<>();
+        SegmentManager manager = new SegmentManager();
 
         try (Scanner input = new Scanner(dataFile)) {
             while (input.hasNextLine()) {
@@ -41,9 +42,12 @@ public class Day05 {
                 // Find maximum ID
                 result = Math.max(result, seatId);
 
+                manager.addSeat(seatId);
                 seatList.add(seatId);
             }
-            System.out.println(result);
+            System.out.format("Highest seat id: %d\n", result);
+            System.out.format("My seat is: %d\n", manager.getSeat());
+
             seatList.sort(Integer::compareTo);
 
             int previousSeat = Integer.MIN_VALUE;
@@ -54,7 +58,7 @@ public class Day05 {
                 }
                 if (assignedSeat > previousSeat + 1) {
                     // Gap in seat assignments
-                    System.out.println(previousSeat + 1);
+                    System.out.format("Sorting says my seat is: %d\n", previousSeat + 1);
                 }
                 previousSeat = assignedSeat;
             }
