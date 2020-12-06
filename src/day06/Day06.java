@@ -6,8 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day06 {
@@ -29,16 +28,21 @@ public class Day06 {
         /*
          * Part 1: Every question where anyone in the group answered yes
          *
-         * By adding the individual answers to a set we find the union of
-         * all the questions that were answered yes. The sum of the sizes
-         * of these set is the result.
+         * By adding the individual answers to a list if theyare not present
+         * we find the union of all the questions that were answered yes.
+         * The sum of the sizes of these lists is the result.
          */
         int result = 0;
         for (String group : groups) {
-            Set<Character> answers = new HashSet<>();
+            List<String> answers = new ArrayList<>();
             String[] members = group.split("\n");
             for (String member : members) {
-                answers.addAll(member.chars().mapToObj(c -> (char) c).collect(Collectors.toList()));
+                String[] questions = member.split("");
+                for (String question : questions) {
+                    if (!answers.contains(question)) {
+                        answers.add(question);
+                    }
+                }
             }
             result += answers.size();
         }
@@ -48,25 +52,31 @@ public class Day06 {
         /*
          * Part 2: Any question where everyone in the group answered yes
          *
-         * Start with the entire set. Then intersect that set with the answer
-         * from each member. The final set will list the questions that every
+         * Start with the entire alphabet. Then intersect that set with the answer
+         * from each member. The final list will contain the questions that every
          * member answered yes. The answer is the sum of the length of all
-         * the groups final sets.
+         * the final lists.
          */
         result = 0;
         for (String group : groups) {
-            Set<Character> answers = "abcdefghijklmnopqrstuvwxyz"
-                    .chars()
-                    .mapToObj(c -> (char) c)
-                    .collect(Collectors.toSet());
+            String alphabet = "abcdefghijklmnopqrstuvwxyz";
+            List<String> answers = new ArrayList<>();
+
+            for (int i = 0; i < alphabet.length(); i++) {
+                answers.add(alphabet.substring(i, i+1));
+            }
+
             String[] members = group.split("\n");
 
             for (String member : members) {
-                answers = member
-                        .chars()
-                        .mapToObj(c -> (char) c)
-                        .filter(answers::contains)
-                        .collect(Collectors.toSet());
+                List<String> delete = new ArrayList<>();
+                for (int i = 0; i < answers.size(); i++) {
+                    String item = answers.get(i);
+                    if (!member.contains(item)) {
+                        delete.add(item);
+                    }
+                }
+                answers.removeAll(delete);
             }
             result += answers.size();
         }
