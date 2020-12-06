@@ -7,7 +7,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Day06 {
     public static void main(String[] args) {
@@ -28,7 +27,7 @@ public class Day06 {
         /*
          * Part 1: Every question where anyone in the group answered yes
          *
-         * By adding the individual answers to a list if theyare not present
+         * By adding the individual answers to a list if they are not present
          * we find the union of all the questions that were answered yes.
          * The sum of the sizes of these lists is the result.
          */
@@ -70,8 +69,7 @@ public class Day06 {
 
             for (String member : members) {
                 List<String> delete = new ArrayList<>();
-                for (int i = 0; i < answers.size(); i++) {
-                    String item = answers.get(i);
+                for (String item : answers) {
                     if (!member.contains(item)) {
                         delete.add(item);
                     }
