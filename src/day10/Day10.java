@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class Day10 {
     private final List<Integer> adapters;
+    private final HashMap<Integer, Long> nodeCache;
 
     public Day10(String inputFile) {
         List<Integer> input = null;
@@ -34,6 +35,7 @@ public class Day10 {
         if (adapters == null) {
             throw new RuntimeException("Unable to initialize Day 10.");
         }
+        nodeCache = new HashMap<>();
     }
 
     public static void main(String[] args) {
@@ -77,11 +79,13 @@ public class Day10 {
 
     private long numberOfPaths(HashMap<Integer, ArrayList<Integer>> tree, int node) {
         if (!tree.containsKey(node) || tree.get(node).size() == 0) return 1; // End of tree
+        if (nodeCache.containsKey(node)) return nodeCache.get(node);
 
         long paths = 0;
         for (int child: tree.get(node)) {
             paths += numberOfPaths(tree, child);
         }
+        nodeCache.put(node, paths);
         return paths;
     }
 }
