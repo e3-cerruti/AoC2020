@@ -71,14 +71,14 @@ public class Day10 {
             tree.put(adapter, possibilities);
         }
 
-        int paths = numberOfPaths(tree, 0);
+        long paths = numberOfPaths(tree, 0);
         System.out.format("Part 2: %d\n", paths);
     }
 
-    private int numberOfPaths(HashMap<Integer, ArrayList<Integer>> tree, int node) {
+    private long numberOfPaths(HashMap<Integer, ArrayList<Integer>> tree, int node) {
         if (!tree.containsKey(node) || tree.get(node).size() == 0) return 1; // End of tree
 
-        int paths = 0;
+        long paths = 0;
         for (int child: tree.get(node)) {
             paths += numberOfPaths(tree, child);
         }
