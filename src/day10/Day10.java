@@ -6,9 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day10 {
@@ -60,30 +58,67 @@ public class Day10 {
         System.out.format("Part 1: %d\n", gaps.get(1) * gaps.get(3));
     }
 
-    private void part2() {
-        HashMap<Integer, ArrayList<Integer>> tree = new HashMap<>();
-        adapters.add(0, 0); // Insert the wall socket
+    private Map<Integer, ArrayList<Integer>> makeGraph() {
+        HashMap<Integer, ArrayList<Integer>> graph = new HashMap<>();
+
         for (int adapter: adapters) {
-            ArrayList<Integer> possibilities = new ArrayList<>();
+            ArrayList<Integer> parents = new ArrayList<>();
             for (int i = 1; i < 4; i++) {
                 if (adapters.contains(adapter + i)) {
-                    possibilities.add(adapter + i);
+                    parents.add(adapter + i);
                 }
             }
-            tree.put(adapter, possibilities);
+            graph.put(adapter, parents);
         }
+        return graph;
+    }
 
-        long paths = numberOfPaths(tree, 0);
+    private void part2() {
+        adapters.add(0, 0);  // add seat power
+
+        Map<Integer, ArrayList<Integer>> graph = makeGraph();
+
+        long paths = numberOfPaths(graph,0, Collections.max(adapters));
         System.out.format("Part 2: %d\n", paths);
     }
 
-    private long numberOfPaths(HashMap<Integer, ArrayList<Integer>> tree, int node) {
-        if (!tree.containsKey(node) || tree.get(node).size() == 0) return 1; // End of tree
+    public long numberOfPaths(Map<Integer, ArrayList<Integer>> graph, int source, int destination) {
+        // to store required answer.
+        List<Long> depthOfPath = new ArrayList<>(Collections.nCopies(Collections.max(adapters) + 1, 0L));
+
+        // traverse in reverse order
+        Collections.reverse(adapters);
+        for (int adapter: adapters) {
+            if (adapter == destination) {
+                depthOfPath.set(adapter, 1L);
+                continue;
+            }
+            long currentDepth = 0;
+            for (int child: graph.get(adapter)) {
+                currentDepth += depthOfPath.get(child);
+            }
+            depthOfPath.set(adapter, currentDepth);
+        }
+
+        return depthOfPath.get(source);
+    }
+
+    @SuppressWarnings("unused")
+    private void part2r() {
+        adapters.add(0, 0); // Insert the wall socket
+        Map<Integer, ArrayList<Integer>> graph = makeGraph();
+
+        long paths = numberOfPaths(graph, 0);
+        System.out.format("Part 2: %d\n", paths);
+    }
+
+    private long numberOfPaths(Map<Integer, ArrayList<Integer>> graph, int node) {
+        if (!graph.containsKey(node) || graph.get(node).size() == 0) return 1; // End of tree
         if (nodeCache.containsKey(node)) return nodeCache.get(node);
 
         long paths = 0;
-        for (int child: tree.get(node)) {
-            paths += numberOfPaths(tree, child);
+        for (int child: graph.get(node)) {
+            paths += numberOfPaths(graph, child);
         }
         nodeCache.put(node, paths);
         return paths;
