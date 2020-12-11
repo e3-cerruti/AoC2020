@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day10 {
-    public static final int REPETION = 100;
+    public static final int REPETION = 10000;
     private final List<Integer> adapters;
     private final HashMap<Integer, Long> nodeCache;
 
@@ -45,10 +45,12 @@ public class Day10 {
         day.adapters.add(0, 0);  // add seat power
         Map<Integer, ArrayList<Integer>> graph = day.makeGraph();
 
-        //day.part2(graph);
-        //day.part2r(graph);
-        //day.part2rnc(graph);
+        System.out.println("Part 2: " + day.part2(graph));
+        System.out.println("Part 2: " + day.part2r(graph));
+        day.nodeCache.clear();
+        System.out.println("Part 2: " + day.part2Reddit());
 
+        /*
         long mark1 = System.nanoTime();
         for (int i = 0; i < REPETION; i++) day.part2(graph);
         long mark2 = System.nanoTime();
@@ -57,12 +59,14 @@ public class Day10 {
             day.nodeCache.clear();
         }
         long mark3 = System.nanoTime();
-        for (int i = 0; i < REPETION; i++) day.part2rnc(graph);
-        long mark4 = System.nanoTime();
+//        for (int i = 0; i < REPETION; i++) day.part2rnc(graph);
+//        long mark4 = System.nanoTime();
 
         System.out.format("Non-recursive: %d ns\n", (mark2 - mark1) / REPETION);
         System.out.format("Recursive: %d ns\n", (mark3 - mark2) / REPETION);
-        System.out.format("Non-cached recursive: %d ns\n", (mark4 - mark3) / REPETION);
+//        System.out.format("Non-cached recursive: %d ns\n", (mark4 - mark3) / REPETION);
+
+         */
     }
 
     private void part1() {
@@ -78,6 +82,26 @@ public class Day10 {
         }
 
         System.out.format("Part 1: %d\n", gaps.get(1) * gaps.get(3));
+    }
+
+    private long part2Reddit() {
+        List<Integer> localAdapters = new ArrayList<>(adapters);
+        localAdapters.add(Collections.max(localAdapters) + 3);
+
+        int prevAdapter = 0;
+        int s = 0; // sequence of adapters without gaps
+        long d = 1L;
+
+        for (int adapter: localAdapters) {
+            if (adapter - prevAdapter == 1) {
+                s += 1;
+            } else {
+                d *= Math.pow(2, Math.max(0, s - 1)) - Math.max(0, s - 3);
+                s = 0;
+            }
+            prevAdapter = adapter;
+        }
+        return d;
     }
 
     private Map<Integer, ArrayList<Integer>> makeGraph() {
