@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day10 {
+    public static final int REPETION = 100;
     private final List<Integer> adapters;
     private final HashMap<Integer, Long> nodeCache;
 
@@ -40,7 +41,28 @@ public class Day10 {
         Day10 day = new Day10("input.txt");
 
         day.part1();
-        day.part2();
+
+        day.adapters.add(0, 0);  // add seat power
+        Map<Integer, ArrayList<Integer>> graph = day.makeGraph();
+
+        //day.part2(graph);
+        //day.part2r(graph);
+        //day.part2rnc(graph);
+
+        long mark1 = System.nanoTime();
+        for (int i = 0; i < REPETION; i++) day.part2(graph);
+        long mark2 = System.nanoTime();
+        for (int i = 0; i < REPETION; i++) {
+            day.part2r(graph);
+            day.nodeCache.clear();
+        }
+        long mark3 = System.nanoTime();
+        for (int i = 0; i < REPETION; i++) day.part2rnc(graph);
+        long mark4 = System.nanoTime();
+
+        System.out.format("Non-recursive: %d ns\n", (mark2 - mark1) / REPETION);
+        System.out.format("Recursive: %d ns\n", (mark3 - mark2) / REPETION);
+        System.out.format("Non-cached recursive: %d ns\n", (mark4 - mark3) / REPETION);
     }
 
     private void part1() {
@@ -73,54 +95,61 @@ public class Day10 {
         return graph;
     }
 
-    private void part2() {
-        adapters.add(0, 0);  // add seat power
-
-        Map<Integer, ArrayList<Integer>> graph = makeGraph();
-
-        long paths = numberOfPaths(graph,0, Collections.max(adapters));
-        System.out.format("Part 2: %d\n", paths);
+    private long part2(Map<Integer, ArrayList<Integer>> graph) {
+        return numberOfPaths(graph,0, Collections.max(adapters));
     }
 
     public long numberOfPaths(Map<Integer, ArrayList<Integer>> graph, int source, int destination) {
         // to store required answer.
-        List<Long> depthOfPath = new ArrayList<>(Collections.nCopies(Collections.max(adapters) + 1, 0L));
+        long[] depthOfPath = new long[destination+1];
+        // Normally you would need to do a topological sort here
+        List<Integer> nodes = new ArrayList<>(graph.keySet());
+        nodes.sort(Collections.reverseOrder());
 
-        // traverse in reverse order
-        Collections.reverse(adapters);
-        for (int adapter: adapters) {
-            if (adapter == destination) {
-                depthOfPath.set(adapter, 1L);
-                continue;
-            }
+        nodes.remove(0);
+        depthOfPath[destination] = 1L;
+
+        for (int node: nodes) {
             long currentDepth = 0;
-            for (int child: graph.get(adapter)) {
-                currentDepth += depthOfPath.get(child);
+            for (int child : graph.get(node)) {
+                currentDepth += depthOfPath[child];
             }
-            depthOfPath.set(adapter, currentDepth);
+            depthOfPath[node] = currentDepth;
         }
 
-        return depthOfPath.get(source);
+        return depthOfPath[source];
     }
 
     @SuppressWarnings("unused")
-    private void part2r() {
-        adapters.add(0, 0); // Insert the wall socket
-        Map<Integer, ArrayList<Integer>> graph = makeGraph();
-
-        long paths = numberOfPaths(graph, 0);
-        System.out.format("Part 2: %d\n", paths);
+    private long part2r(Map<Integer, ArrayList<Integer>> graph) {
+        return numberOfPathsRecursive(graph, 0);
     }
 
-    private long numberOfPaths(Map<Integer, ArrayList<Integer>> graph, int node) {
+    private long numberOfPathsRecursive(Map<Integer, ArrayList<Integer>> graph, int node) {
         if (!graph.containsKey(node) || graph.get(node).size() == 0) return 1; // End of tree
         if (nodeCache.containsKey(node)) return nodeCache.get(node);
 
         long paths = 0;
         for (int child: graph.get(node)) {
-            paths += numberOfPaths(graph, child);
+            paths += numberOfPathsRecursive(graph, child);
         }
         nodeCache.put(node, paths);
         return paths;
     }
+
+    @SuppressWarnings("unused")
+    private long part2rnc(Map<Integer, ArrayList<Integer>> graph) {
+        return numberOfPathsRecursiveNoCache(graph, 0);
+    }
+
+    private long numberOfPathsRecursiveNoCache(Map<Integer, ArrayList<Integer>> graph, int node) {
+        if (!graph.containsKey(node) || graph.get(node).size() == 0) return 1; // End of tree
+
+        long paths = 0;
+        for (int child: graph.get(node)) {
+            paths += numberOfPathsRecursiveNoCache(graph, child);
+        }
+        return paths;
+    }
+
 }
