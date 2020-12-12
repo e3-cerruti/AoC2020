@@ -6,17 +6,17 @@ class FerryTest {
 
     @org.junit.jupiter.api.Test
     void turnLeft() {
-        assertEquals(Ferry.Direction.WEST, Ferry.Direction.NORTH.turnLeft(90));
-        assertEquals(Ferry.Direction.NORTH, Ferry.Direction.EAST.turnLeft(90));
-        assertEquals(Ferry.Direction.EAST, Ferry.Direction.SOUTH.turnLeft(90));
-        assertEquals(Ferry.Direction.SOUTH, Ferry.Direction.WEST.turnLeft(90));
+        assertEquals(Direction.WEST, Direction.NORTH.turnLeft(90));
+        assertEquals(Direction.NORTH, Direction.EAST.turnLeft(90));
+        assertEquals(Direction.EAST, Direction.SOUTH.turnLeft(90));
+        assertEquals(Direction.SOUTH, Direction.WEST.turnLeft(90));
     }
 
     @org.junit.jupiter.api.Test
     void turnRight() {
-        assertEquals(Ferry.Direction.EAST, Ferry.Direction.NORTH.turnRight(90));
-        assertEquals(Ferry.Direction.SOUTH, Ferry.Direction.EAST.turnRight(90));
-        assertEquals(Ferry.Direction.WEST, Ferry.Direction.SOUTH.turnRight(90));
-        assertEquals(Ferry.Direction.NORTH, Ferry.Direction.WEST.turnRight(90));
+        assertEquals(Direction.EAST, Direction.NORTH.turnRight(90));
+        assertEquals(Direction.SOUTH, Direction.EAST.turnRight(90));
+        assertEquals(Direction.WEST, Direction.SOUTH.turnRight(90));
+        assertEquals(Direction.NORTH, Direction.WEST.turnRight(90));
     }
 }

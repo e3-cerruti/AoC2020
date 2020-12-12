@@ -2,8 +2,6 @@ package day12;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Ferry {
     private final int[] position = new int[2];
@@ -18,43 +16,6 @@ public class Ferry {
                     "R", Ferry::turnFerryRight,
                     "F", Ferry::moveFerryForward
             );
-    private static final Logger logger = Logger.getLogger("day12.Ferry");
-
-    public enum Direction {
-        NORTH (0, Ferry::moveFerryNorth),
-        EAST (90, Ferry::moveFerryEast),
-        SOUTH (180, Ferry::moveFerrySouth),
-        WEST (270, Ferry::moveFerryWest);
-
-        private final int degrees;
-        private final BiConsumer<Ferry, Integer> handler;
-
-        Direction(int degrees, BiConsumer<Ferry, Integer> handler) {
-            this.degrees = degrees;
-            this.handler = handler;
-        }
-
-        public Direction turnLeft(int angle) {
-            return Direction.fromDegrees((degrees - (angle % 360) + 360) % 360);
-        }
-
-        public Direction turnRight(int angle) {
-            return Direction.fromDegrees((degrees + angle) % 360);
-        }
-
-        private static Direction fromDegrees(int angle) {
-            for (Direction v : values()) {
-                if (v.degrees == angle) {
-                    return v;
-                }
-            }
-            return null; // TODO: Should this throw an exception?
-        }
-
-        public void move(Ferry ferry, int distance) {
-            handler.accept(ferry, distance);
-        }
-    }
 
     public void processInstruction(String action, int value) {
         dispatchTable.get(action).accept(this, value);
@@ -63,7 +24,6 @@ public class Ferry {
     private void move(int x, int y) {
         position[0] += x;
         position[1] += y;
-        logger.log(Level.INFO, "move({0}, {1}) -> ({2}, {3})[{4}]", new Object[]{x, y, position[0], position[1], direction.degrees});
     }
 
     // Actions
