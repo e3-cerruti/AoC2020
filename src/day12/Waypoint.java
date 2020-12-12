@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class Waypoint {
     private final int[] position = new int[]{10, 1};
-    private final long[] ferryPosition = new long[]{0, 0};
+    private final int[] ferryPosition = new int[]{0, 0};
 
     private static final Map<String, BiConsumer<Waypoint, Integer>> dispatchTable =
             Map.of(
@@ -61,7 +61,7 @@ public class Waypoint {
         logger.log(Level.FINE, "move({0}, {1}) -> ({2}, {3})", new Object[]{x, y, position[0], position[1]});
     }
 
-    private void moveFerry(long x, long y) {
+    private void moveFerry(int x, int y) {
         ferryPosition[0] += x;
         ferryPosition[1] += y;
         logger.log(Level.FINE, "move({0}, {1}) -> ({2}, {3})", new Object[]{x, y, ferryPosition[0], ferryPosition[1]});
@@ -144,7 +144,7 @@ public class Waypoint {
         moveFerry(position[0] * distance, position[1] * distance);
     }
 
-    public long getManhattanDistance() {
+    public int getManhattanDistance() {
         return Math.abs(ferryPosition[0]) + Math.abs(ferryPosition[1]);
     }
 
