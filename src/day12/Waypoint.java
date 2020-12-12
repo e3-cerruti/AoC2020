@@ -59,7 +59,7 @@ public class Waypoint {
         }
     }
 
-    public void processCommand(String operation, int operand) {
+    public void processInstruction(String operation, int operand) {
         dispatchTable.get(operation).accept(this, operand);
     }
 

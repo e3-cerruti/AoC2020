@@ -1,10 +1,7 @@
 package day12;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +18,7 @@ public class Ferry {
                     "R", Ferry::turnFerryRight,
                     "F", Ferry::moveFerryForward
             );
-    private static Logger logger = Logger.getLogger("day12.Ferry");
+    private static final Logger logger = Logger.getLogger("day12.Ferry");
 
     public enum Direction {
         NORTH (0, Ferry::moveFerryNorth),
@@ -59,8 +56,8 @@ public class Ferry {
         }
     }
 
-    public void processCommand(String operation, int operand) {
-        dispatchTable.get(operation).accept(this, operand);
+    public void processInstruction(String action, int value) {
+        dispatchTable.get(action).accept(this, value);
     }
 
     private void move(int x, int y) {

@@ -27,14 +27,13 @@ public class Day12 {
     private void processComands() {
         try (Scanner input = new Scanner(dataFile)) {
             while (input.hasNextLine()) {
-                String command = input.nextLine();
-                String operation = command.substring(0, 1);
-                int operand = Integer.parseInt(command.substring(1));
+                String instruction = input.nextLine();
+                String action = instruction.substring(0, 1);
+                int value = Integer.parseInt(instruction.substring(1));
 
-                logger.log(Level.FINE, "process({0}, {1})", new Object[]{operation, operand});
-                ferry.processCommand(operation, operand);
-                waypoint.processCommand(operation, operand);
-
+                logger.log(Level.FINE, "process({0}, {1})", new Object[]{action, value});
+                ferry.processInstruction(action, value);
+                waypoint.processInstruction(action, value);
             }
         }
 
