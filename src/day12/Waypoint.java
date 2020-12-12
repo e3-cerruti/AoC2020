@@ -41,6 +41,14 @@ public class Waypoint {
             return new int[]{x, y};
         }
 
+        public static int normalizeLeftAngle(int angle) {
+            return (360 - (angle % 360) ) % 360;
+        }
+
+        public static int normalizedRightAngle(int angle) {
+            return angle % 360;
+        }
+
         private static Direction fromDegrees(int angle) {
             for (Direction v : values()) {
                 if (v.degrees == angle) {
@@ -106,28 +114,16 @@ public class Waypoint {
 
     // Action L means to turn left the given number of degrees.
     public static void rotateWaypointLeft(Waypoint waypoint, int angle) {
-        waypoint.rotateLeft(angle);
-    }
-
-    private void rotateLeft(int angle) {
-        rotate(360 - (angle % 360));
+        int normalizedAngle = Direction.normalizeLeftAngle(angle);
+        waypoint.setWaypointPosition(Direction.fromDegrees(normalizedAngle)
+                .rotateWaypoint(waypoint.position));
     }
 
     // Action R means to turn right the given number of degrees.
     public static void rotateWaypointRight(Waypoint waypoint, int angle) {
-        waypoint.rotateRight(angle);
-    }
-
-    private void rotateRight(int angle) {
-        rotate(angle);
-    }
-
-    private void rotate(int angle) {
-        Direction d = Direction.fromDegrees(angle);
-        assert d != null;
-        setWaypointPosition(d.rotateWaypoint(position));
-        logger.log(Level.FINE, "rotate({0}, [{1}]) -> ({2}, {3})", new Object[]{d, angle, position[0], position[1]});
-
+        int normalizedAngle = Direction.normalizedRightAngle(angle);
+        waypoint.setWaypointPosition(Direction.fromDegrees(normalizedAngle)
+                .rotateWaypoint(waypoint.position));
     }
 
     private void setWaypointPosition(int[] position) {
