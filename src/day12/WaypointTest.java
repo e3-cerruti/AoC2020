@@ -7,86 +7,86 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WaypointTest {
 
-    private WaypointOld waypointOld;
+    private Waypoint waypoint;
 
     @BeforeEach
     void setUp() {
-        waypointOld = new WaypointOld();
+        waypoint = new Waypoint();
     }
 
     @Test
     void moveNorth() {
-        WaypointOld.moveWaypointNorth(waypointOld, 10);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(21, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryNorth(waypoint, 10);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(21, waypoint.getManhattanDistance());
     }
 
     @Test
     void moveEast() {
-        WaypointOld.moveWaypointEast(waypointOld, 10);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(21, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryEast(waypoint, 10);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(21, waypoint.getManhattanDistance());
     }
 
     @Test
     void moveSouth() {
-        WaypointOld.moveWaypointSouth(waypointOld, 10);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(19, waypointOld.getManhattanDistance());
+        Waypoint.moveFerrySouth(waypoint, 10);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(19, waypoint.getManhattanDistance());
     }
 
     @Test
     void moveWest() {
-        WaypointOld.moveWaypointWest(waypointOld, 10);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(1, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryWest(waypoint, 10);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(1, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateLeft() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 90);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(20, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 90);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(20, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateLeft2() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 180);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(0, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 180);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(0, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateLeft3() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 270);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(20, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 270);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(20, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateRigth() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 90);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(20, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 90);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(20, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateRight2() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 180);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(0, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 180);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(0, waypoint.getManhattanDistance());
     }
 
     @Test
     void rotateRight3() {
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        WaypointOld.rotateWaypointLeft(waypointOld, 270);
-        WaypointOld.moveFerryForward(waypointOld, 1);
-        assertEquals(20, waypointOld.getManhattanDistance());
+        Waypoint.moveFerryForward(waypoint, 1);
+        Waypoint.rotateWaypointLeft(waypoint, 270);
+        Waypoint.moveFerryForward(waypoint, 1);
+        assertEquals(20, waypoint.getManhattanDistance());
     }
 }

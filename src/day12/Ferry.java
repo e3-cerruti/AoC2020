@@ -2,8 +2,12 @@ package day12;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Ferry {
+    private static final Logger logger = Logger.getLogger("day12.Ferry");
+
     private final int[] position = new int[2];
     private Direction direction = Direction.EAST;
     private static final Map<String, BiConsumer<Ferry, Integer>> dispatchTable =
@@ -24,6 +28,7 @@ public class Ferry {
     private void move(int x, int y) {
         position[0] += x;
         position[1] += y;
+        logger.log(Level.FINE, "move({0}, {1}) -> ({2}, {3})", new Object[]{x, y, position[0], position[1]});
     }
 
     // Actions
@@ -91,9 +96,17 @@ public class Ferry {
         direction.move(this, distance);
     }
 
+    protected void setPosition(int[] position) {
+        this.position[0] = position[0];
+        this.position[1] = position[1];
+    }
+
+    public int[] getPosition() {
+        return position;
+    }
+
     public int getManhattanDistance() {
         return Math.abs(position[0]) + Math.abs(position[1]);
     }
-
 
 }
