@@ -1,11 +1,11 @@
 package day13;
 
-class Bus {
+class Shuttle {
     private final int number;
     private final int order;
     private final boolean valid;
 
-    public Bus(String name, int order) {
+    public Shuttle(String name, int order) {
         this.order = order;
         this.valid = !name.equals("x");
         number = valid ? Integer.parseInt(name) : -1;
@@ -25,16 +25,8 @@ class Bus {
         return number;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
     public boolean isValid() {
         return valid;
-    }
-
-    public static int latestInitialDeparture(Bus bus, Bus bus1) {
-        return ((bus.number - bus.order) - (bus1.number - bus1.order));
     }
 
     public long getInitialDeparture() {
