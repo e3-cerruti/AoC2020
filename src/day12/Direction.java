@@ -3,10 +3,10 @@ package day12;
 import java.util.function.BiConsumer;
 
 public enum Direction {
-    NORTH (0, Ferry::moveFerryNorth, new int[][]{new int[]{1,0}, new int[]{0,1}}),
-    EAST (90, Ferry::moveFerryEast, new int[][]{new int[]{0,1}, new int[]{-1, 0}}),
-    SOUTH (180, Ferry::moveFerrySouth, new int[][]{new int[]{-1,0}, new int[]{0,-1}}),
-    WEST (270, Ferry::moveFerryWest, new int[][]{new int[]{0,-1}, new int[]{1, 0}});
+    NORTH (0, Ferry::moveNorth, new int[][]{new int[]{1,0}, new int[]{0,1}}),
+    EAST (90, Ferry::moveEast, new int[][]{new int[]{0,1}, new int[]{-1, 0}}),
+    SOUTH (180, Ferry::moveSouth, new int[][]{new int[]{-1,0}, new int[]{0,-1}}),
+    WEST (270, Ferry::moveWest, new int[][]{new int[]{0,-1}, new int[]{1, 0}});
 
     private final int degrees;
     private final BiConsumer<Ferry, Integer> handler;

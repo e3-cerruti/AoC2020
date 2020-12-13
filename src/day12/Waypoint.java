@@ -1,7 +1,9 @@
 package day12;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,24 +12,14 @@ public class Waypoint extends Ferry {
     private final int[] ferryPosition = new int[]{0, 0};
     private static final Logger logger = Logger.getLogger("day12.Waypoint");
 
-    private static final Map<String, BiConsumer<Waypoint, Integer>> dispatchTable =
-            Map.of(
-                    "N", Ferry::moveFerryNorth,
-                    "E", Ferry::moveFerryEast,
-                    "S", Ferry::moveFerrySouth,
-                    "W", Ferry::moveFerryWest,
-                    "L", Waypoint::rotateWaypointLeft,
-                    "R", Waypoint::rotateWaypointRight,
-                    "F", Waypoint::moveFerryForward
-            );
 
     public Waypoint() {
         super();
         setPosition(new int[]{10, 1});
-    }
-
-    public void processInstruction(String action, int value) {
-        dispatchTable.get(action).accept(this, value);
+        Map<String, Consumer<Integer>> aTable = new HashMap<>(dispatchTable);
+        aTable.put("L", this::rotateLeft);
+        aTable.put("R", this::rotateRight);
+        dispatchTable = aTable;
     }
 
     private void moveFerry(int x, int y) {
@@ -37,19 +29,17 @@ public class Waypoint extends Ferry {
     }
 
     // Action L means to turn left the given number of degrees.
-    public static void rotateWaypointLeft(Ferry ferry, int angle) {
-        Waypoint waypoint = (Waypoint) ferry;
+    public void rotateLeft(int angle) {
         int normalizedAngle = Direction.normalizeLeftAngle(angle);
-        waypoint.setWaypointPosition(Direction.fromDegrees(normalizedAngle)
-                .rotateWaypoint(waypoint.getPosition()));
+        setWaypointPosition(Direction.fromDegrees(normalizedAngle)
+                .rotateWaypoint(getPosition()));
     }
 
     // Action R means to turn right the given number of degrees.
-    public static void rotateWaypointRight(Ferry ferry, int angle) {
-        Waypoint waypoint = (Waypoint) ferry;
+    public void rotateRight(int angle) {
         int normalizedAngle = Direction.normalizedRightAngle(angle);
-        waypoint.setWaypointPosition(Direction.fromDegrees(normalizedAngle)
-                .rotateWaypoint(waypoint.getPosition()));
+        setWaypointPosition(Direction.fromDegrees(normalizedAngle)
+                .rotateWaypoint(getPosition()));
     }
 
     private void setWaypointPosition(int[] position) {
@@ -57,11 +47,8 @@ public class Waypoint extends Ferry {
     }
 
     // Action F means to move forward by the given value in the direction the ship is currently facing.
-    public static void moveFerryForward(Waypoint waypoint, int distance) {
-        waypoint.moveForward(distance);
-    }
-
-    private void moveForward(int distance) {
+    @Override
+    protected void moveForward(int distance) {
         int[] position = getPosition();
         moveFerry(position[0] * distance, position[1] * distance);
     }
