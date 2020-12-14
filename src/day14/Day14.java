@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 
 public class Day14 {
     private final InputStream dataFile;
-    Map<Long, Long> memory = new HashMap<Long, Long>();
+    Map<Long, Long> memory = new HashMap<>();
 
-    Pattern maskPattern = Pattern.compile("mask\\s=\\s([0|1|X]+)");
-    Pattern memoryPattern = Pattern.compile("mem\\[(\\d+)\\]\\s=\\s(\\d+)");
+    Pattern maskPattern = Pattern.compile("mask\\s=\\s([01X]+)");
+    Pattern memoryPattern = Pattern.compile("mem\\[(\\d+)]\\s=\\s(\\d+)");
 
     long andMask = 0L;
     long orMask = 0L;
@@ -37,18 +37,17 @@ public class Day14 {
                 version2(input.nextLine());
             }
         }
+        System.out.println(memory.values().stream().reduce(Long::sum).orElse(-1L));
+
     }
 
     private void initialization(String instruction) {
-        System.out.println(instruction);
         Matcher maskMatcher = maskPattern.matcher(instruction);
         Matcher memoryMatcher = memoryPattern.matcher(instruction);
         if (maskMatcher.find()) {
             String mask = maskMatcher.group(1);
             andMask = Long.parseLong(mask.replaceAll("X", "1"), 2);
             orMask = Long.parseLong(mask.replaceAll("X", "0"), 2);
-            System.out.println(Long.toBinaryString(andMask));
-            System.out.println(Long.toBinaryString(orMask));
         } else if (memoryMatcher.find()) {
             Long mem = Long.parseLong(memoryMatcher.group(1));
             int value = Integer.parseInt(memoryMatcher.group(2));
@@ -57,9 +56,6 @@ public class Day14 {
             data = andMask & value;
             data = orMask | data;
             memory.put(mem, data);
-
-            System.out.println(mem + " " + Long.toBinaryString(data) + " " + value);
-            System.out.println(memory.values().stream().reduce(Long::sum));
         }
     }
 
@@ -75,7 +71,7 @@ public class Day14 {
 
             masks.clear();
             masks.add(0L);
-            long positionValue = 1;
+            long positionValue;
 
             for (int n = 0; n < 36; n++) {
                 positionValue = 1L << n;
@@ -87,25 +83,16 @@ public class Day14 {
                 }
                 masks.addAll(newMasks);
             }
-            System.out.println(masks.size());
             xMask ^= 0xFFFF;
-            System.out.println(String.format("%36s",Long.toBinaryString(orMask)).replaceAll(" ", "0"));
-            System.out.println(String.format("%36s",Long.toBinaryString(xMask)).replaceAll(" ", "0"));
         } else if (memoryMatcher.find()) {
             long mem = Long.parseLong(memoryMatcher.group(1));
             long value = Long.parseLong(memoryMatcher.group(2));
 
-
-            System.out.println(">" + mem);
-            System.out.println(String.format("%36s",Long.toBinaryString(mem)).replaceAll(" ", "0"));
             mem = mem & xMask | orMask;
             for (Long mask : masks) {
                 long location = (mem | orMask) | mask;
-//                System.out.format("Put %d at %d\n", value, location);
                 memory.put(location, value);
             }
-
-            System.out.println(memory.values().stream().reduce(Long::sum));
         }
     }
 }
