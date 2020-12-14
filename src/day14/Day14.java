@@ -38,7 +38,6 @@ public class Day14 {
             }
         }
         System.out.println(memory.values().stream().reduce(Long::sum).orElse(-1L));
-
     }
 
     private void initialization(String instruction) {
