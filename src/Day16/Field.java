@@ -35,6 +35,11 @@ public class Field {
                 boolean endContained = false;
                 int startPosition = 0;
                 int endPosition = 0;
+                for (List<Integer> r : result) {
+                    System.out.format("%d-%d\t", r.get(0), r.get(1));
+                }
+                System.out.println();
+
                 for (int i = 0; i < result.size(); i++) {
                     int resultStart = result.get(i).get(0);
                     int resultEnd = result.get(i).get(1);
@@ -42,42 +47,35 @@ public class Field {
                     if (resultStart <= start && start <= resultEnd) {
                         startContained = true;
                         startPosition = i;
-                    } else if (start < resultStart) {
-                        startPosition = i;
+                    } else if (resultStart < start) {
+                        startPosition = i + 1;
                     }
 
                     if (resultStart <= end && end <= resultEnd) {
                         endContained = true;
                         endPosition = i;
-                    } else if (end < resultStart) {
-                        endPosition = i;
+                    } else if (end > resultEnd) {
+                        endPosition = i + 1;
                     }
                 }
 
                 if (startPosition == endPosition) {
-                    if (!startContained && !endContained) {
-                        result.add(startPosition, Arrays.asList(start, end));
-                    } else if (startContained) {
+                    if (startContained && !endContained) {
                         result.get(startPosition).set(1, end);
-                    } else if (endContained) { // why must start contained be true?
+                    } else if (endContained && !startContained) { // why must start contained be true?
                         result.get(startPosition).set(0, start);
+                    } else if (!startContained && !endContained) {
+                        result.add(startPosition, Arrays.asList(start, end));
                     }
                 } else {
+                    if (!endContained && endPosition >= result.size()) {
+                        result.add(Arrays.asList(start, end));
+                    }
                     if (startContained && endContained) {
                         result.get(endPosition).set(0, result.get(startPosition).get(0));
-                        List<List<Integer>> toRemove = new ArrayList<>();
-                        for (int i = startPosition; i < endPosition; i++) {
-                            toRemove.add(result.get(i));
-                        }
-                        result.removeAll(toRemove);
                     } else if (startContained) {
                         result.get(endPosition).set(0, result.get(startPosition).get(0));
                         result.get(endPosition).set(1, end);
-                        List<List<Integer>> toRemove = new ArrayList<>();
-                        for (int i = startPosition; i < endPosition; i++) {
-                            toRemove.add(result.get(i));
-                        }
-                        result.removeAll(toRemove);
                     } else if (endContained) {
                         result.get(endPosition).set(0, start);
                     }

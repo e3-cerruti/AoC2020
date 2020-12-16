@@ -54,6 +54,9 @@ public class Day16 {
             fieldMap.put(i, new ArrayList<>(fields));
         }
         validRanges = Field.allValidRanges(fields);
+        for (List<Integer> range : validRanges) {
+            System.out.format("%d-%d\n", range.get(0), range.get(1));
+        }
 
     }
 
@@ -74,7 +77,7 @@ public class Day16 {
                     }
                     fieldMap.get(i).removeAll(invalidFields);
                 } else {
-                    System.out.format("Error %d: %d\n", i, value);
+//                    System.out.format("Error %d: %d\n", i, value);
                     totalErrors += value;
                 }
             }
@@ -96,6 +99,7 @@ public class Day16 {
             }
         }
 
+        // Prints the field map
         for (int i : fieldMap.keySet()) {
             List<Field> fields = fieldMap.get(i);
             System.out.format("%d: %s\n", i,
