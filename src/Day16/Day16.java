@@ -2,13 +2,14 @@ package Day16;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Day16 {
     private final List<Field> fields;
     private final Scanner input;
 //    private List<List<Integer>> validRanges;
     private static List<Integer> myTicket;
-    private final static Map<Integer, List<String>> fieldMap = new HashMap<>();
+    private final static Map<Integer, List<Field>> fieldMap = new HashMap<>();
 
     public static void main(String[] args) {
         Day16 day = new Day16(args.length >= 1 && args[0] != null ? args[0] : "test.txt");
@@ -42,17 +43,15 @@ public class Day16 {
 
     private void readFields() {
         String fieldString = input.nextLine();
-        List<String> fieldNames = new ArrayList<>();
         while (!fieldString.isBlank()) {
             Field field = new Field(fieldString);
             System.out.println(field);
             fields.add(field);
-            fieldNames.add(field.getName());
             fieldString = input.nextLine();
         }
 
         for (int i = 0; i < fields.size(); i++) {
-            fieldMap.put(i, new ArrayList<>(fieldNames));
+            fieldMap.put(i, new ArrayList<>(fields));
         }
 //        validRanges = Field.allValidRanges(fields);
 
@@ -66,7 +65,7 @@ public class Day16 {
             String[] ticketFields = ticket.split(",");
             for (int i = 0; i < ticketFields.length; i++) {
                 int value = Integer.parseInt(ticketFields[i]);
-                List<String> invalidFields = new ArrayList<>();
+                List<Field> invalidFields = new ArrayList<>();
 //                for (List<Integer> range: validRanges) {
 //                    if (range.get(0) <= value && value <= range.get(1)) {
 //                        valid = true;
@@ -74,8 +73,8 @@ public class Day16 {
 //                    }
 //                }
                 for (Field field: fields) {
-                    if (fieldMap.get(i).contains(field.getName()) && !field.valueInRange(value)) {
-                        invalidFields.add(field.getName());
+                    if (fieldMap.get(i).contains(field) && !field.valueInRange(value)) {
+                        invalidFields.add(field);
                     }
                 }
                 if (invalidFields.size() == fieldMap.get(i).size()) {
@@ -104,17 +103,20 @@ public class Day16 {
         }
 
         for (int i : fieldMap.keySet()) {
-            List<String> fields = fieldMap.get(i);
-            System.out.format("%d: %s\n", i, String.join(",", fields));
+            List<Field> fields = fieldMap.get(i);
+            System.out.format("%d: %s\n", i,
+                    fields
+                    .stream()
+                    .map(Field::getName)
+                    .collect(Collectors.joining(",")));
         }
     }
 
-    private boolean removeFromMap(String field) {
+    private boolean removeFromMap(Field field) {
         boolean removed = false;
         for (int fieldNumber : fieldMap.keySet()) {
             if (fieldMap.get(fieldNumber).size() > 1) {
                 removed |= fieldMap.get(fieldNumber).remove(field);
-
             }
         }
         return removed;
@@ -123,7 +125,7 @@ public class Day16 {
     private long processMyTicket() {
         long result = 1;
         for (int i : fieldMap.keySet()) {
-            if (fieldMap.get(i).get(0).startsWith("departure")) {
+            if (fieldMap.get(i).get(0).getName().startsWith("departure")) {
                 System.out.format("%s: %d\n", fieldMap.get(i).get(0), myTicket.get(i));
                 result *= myTicket.get(i);
             }
