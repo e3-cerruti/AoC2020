@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Day16 {
     private final List<Field> fields;
     private final Scanner input;
-//    private List<List<Integer>> validRanges;
+    private List<List<Integer>> validRanges;
     private static List<Integer> myTicket;
     private final static Map<Integer, List<Field>> fieldMap = new HashMap<>();
 
@@ -53,7 +53,7 @@ public class Day16 {
         for (int i = 0; i < fields.size(); i++) {
             fieldMap.put(i, new ArrayList<>(fields));
         }
-//        validRanges = Field.allValidRanges(fields);
+        validRanges = Field.allValidRanges(fields);
 
     }
 
@@ -66,22 +66,16 @@ public class Day16 {
             for (int i = 0; i < ticketFields.length; i++) {
                 int value = Integer.parseInt(ticketFields[i]);
                 List<Field> invalidFields = new ArrayList<>();
-//                for (List<Integer> range: validRanges) {
-//                    if (range.get(0) <= value && value <= range.get(1)) {
-//                        valid = true;
-//                        break;
-//                    }
-//                }
-                for (Field field: fields) {
-                    if (fieldMap.get(i).contains(field) && !field.valueInRange(value)) {
-                        invalidFields.add(field);
+                if (Field.validFor(validRanges, value)) {
+                    for (Field field : fields) {
+                        if (fieldMap.get(i).contains(field) && !field.valueInRange(value)) {
+                            invalidFields.add(field);
+                        }
                     }
-                }
-                if (invalidFields.size() == fieldMap.get(i).size()) {
+                    fieldMap.get(i).removeAll(invalidFields);
+                } else {
                     System.out.format("Error %d: %d\n", i, value);
                     totalErrors += value;
-                } else {
-                    fieldMap.get(i).removeAll(invalidFields);
                 }
             }
 

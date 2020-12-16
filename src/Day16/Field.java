@@ -92,6 +92,17 @@ public class Field {
         return result;
     }
 
+    public static boolean validFor(List<List<Integer>> validRanges, int value) {
+        boolean valid = false;
+        for (List<Integer> range: validRanges) {
+            if (range.get(0) <= value && value <= range.get(1)) {
+                valid = true;
+                break;
+            }
+        }
+        return valid;
+    }
+
     public String getName() {
         return name;
     }
