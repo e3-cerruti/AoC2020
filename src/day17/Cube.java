@@ -2,30 +2,13 @@ package day17;
 
 import java.util.*;
 
-public class Cube {
-    private final int[] coordinates;
-    private final int dimensions;
-    private final Grid grid;
-    private final List<String> neighborKeys;
-    private boolean active;
-    private boolean nextState = false;
+public class Cube extends Cell {
 
-    public Cube(Grid grid, String coordinates) {
-        this(grid, Arrays
-                .stream(coordinates.replace("[", "").replace("]", "").split(", "))
-                .mapToInt(Integer::parseInt)
-                .toArray());
+    public Cube(Grid<? extends Cell> grid, String coordinates) {
+        super(grid, coordinates);
     }
 
-    public Cube(Grid grid, int[] coordinates) {
-        this.coordinates = coordinates;
-        this.dimensions = coordinates.length;
-        this.active = false;
-        this.grid = grid;
-        neighborKeys = neighborKeys();
-    }
-
-    private List<String> neighborKeys() {
+    protected List<String> neighborKeys() {
         List<String> result = new ArrayList<>();
         int numberNeighbors = (int) Math.pow(3, dimensions);
         int self = numberNeighbors / 2;
@@ -42,14 +25,6 @@ public class Cube {
         return result;
     }
 
-    public static String toKey(int[] c) {
-        return Arrays.toString(c);
-    }
-
-    public void transition() {
-        active = nextState;
-    }
-
     public void calculateNewState() {
         long activeNeighbors = getActiveNeighbors();
         // If a cube is active and exactly 2 or 3 of its neighbors are also active,
@@ -62,51 +37,28 @@ public class Cube {
         // Otherwise, the cube remains inactive.
         else if (!active && activeNeighbors == 3) {
             nextState = true;
-            wakeNeighbors();
+            grid.wakeNeighbors(this);
         }
-    }
-
-    public long getActiveNeighbors() {
-        return neighbors().stream().filter(Cube::isActive).count();
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public List<Cube> neighbors() {
-        List<Cube> result = new ArrayList<>();
-
-        for (String key : neighborKeys) {
-            if (grid.getCubeMap().containsKey(key)) {
-                result.add(grid.getCubeMap().get(key));
-            }
-        }
-        return result;
-    }
-
-    public void setFutureActive() {
-        nextState = true;
     }
 
     public Map<String, Cube> newNeighbors() {
         Map<String, Cube> result = new HashMap<>();
 
         for (String key : neighborKeys) {
-            if (!grid.getCubeMap().containsKey(key)) {
+            if (!grid.getCellMap().containsKey(key)) {
                 result.put(key, new Cube(grid, key));
             }
         }
         return result;
     }
 
-    public void wakeNeighbors() {
+    public Map<String, Cube> wakeNeighbors() {
         HashMap<String, Cube> nextGeneration = new HashMap<>();
         for (String key : neighborKeys) {
-            if (!grid.cubeMap.containsKey(key)) {
+            if (!grid.cellMap.containsKey(key)) {
                 nextGeneration.put(key, new Cube(grid, key));
             }
         }
-        if (nextGeneration.size() > 0) grid.addNextGeneration(nextGeneration);
+        return nextGeneration;
     }
 }

@@ -3,37 +3,41 @@ package day17;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Grid {
-    Map<String, Cube> cubeMap = new HashMap<>();
-    private final Map<String, Cube> nextGeneration = new HashMap<>();
+public class Grid<T extends Cell> {
+    Map<String, T> cellMap = new HashMap<>();
+    private final Map<String, T> nextGeneration = new HashMap<>();
 
-    public Map<String, Cube> getCubeMap() {
-        return cubeMap;
+    public Map<String, T> getCellMap() {
+        return cellMap;
     }
 
     public void calculateNewState() {
-        Map<String, Cube> newNeighbors = new HashMap<>();
-        for (Cube cube : cubeMap.values()) {
-            newNeighbors.putAll(cube.newNeighbors());
+        Map<String, T> newNeighbors = new HashMap<>();
+        for (T cell : cellMap.values()) {
+            newNeighbors.putAll(cell.newNeighbors());
         }
-        cubeMap.putAll(newNeighbors);
-        cubeMap.values().forEach(Cube::calculateNewState);
+        cellMap.putAll(newNeighbors);
+        cellMap.values().forEach(T::calculateNewState);
     }
 
     public void transition() {
-        cubeMap.values().forEach(Cube::transition);
+        cellMap.values().forEach(T::transition);
         List<String> duplicates = nextGeneration.keySet().stream()
-                .filter(k -> cubeMap.containsKey(k)).collect(Collectors.toList());
+                .filter(k -> cellMap.containsKey(k)).collect(Collectors.toList());
         duplicates.forEach(nextGeneration::remove);
-        cubeMap.putAll(nextGeneration);
+        cellMap.putAll(nextGeneration);
         nextGeneration.clear();
     }
 
-    public long activeCubes() {
-        return cubeMap.values().stream().filter(Cube::isActive).count();
+    public long activeCells() {
+        return cellMap.values().stream().filter(T::isActive).count();
     }
 
-    public void addNextGeneration(HashMap<String, Cube> nextGeneration) {
+    public void addNextGeneration(Map<String, T> nextGeneration) {
         this.nextGeneration.putAll(nextGeneration);
+    }
+
+    public void wakeNeighbors(Cell cell) {
+        addNextGeneration(cell.wakeNeighbors());
     }
 }

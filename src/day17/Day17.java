@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class Day17 {
     private final InputStream dataFile;
-    private final Grid grid = new Grid();
-    private final Grid hyperGrid = new Grid();
+    private final Grid<Cube> grid = new Grid<>();
+    private final Grid<Cube> hyperGrid = new Grid<>();
 
     public static void main(String[] args) {
         Day17 day = new Day17(args.length >= 1 && args[0] != null ? args[0] : "test.txt");
@@ -18,11 +18,11 @@ public class Day17 {
     }
 
     private long activeCubes() {
-        return grid.activeCubes();
+        return grid.activeCells();
     }
 
     private long activeHyperCubes() {
-        return hyperGrid.activeCubes();
+        return hyperGrid.activeCells();
     }
 
     public Day17(String file) {
@@ -38,10 +38,10 @@ public class Day17 {
             for (char c : line.toCharArray()) {
                 String key = Cube.toKey(new int[]{x, y, z});
                 Cube cube = new Cube(grid, key);
-                grid.getCubeMap().put(key, cube);
+                grid.getCellMap().put(key, cube);
                 String hyperKey = Cube.toKey(new int[] { w, x, y, z});
                 Cube hyperCube = new Cube(hyperGrid, hyperKey);
-                hyperGrid.getCubeMap().put(hyperKey, hyperCube);
+                hyperGrid.getCellMap().put(hyperKey, hyperCube);
 
                 if (c == '#') {
                     cube.setFutureActive();
