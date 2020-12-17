@@ -2,7 +2,9 @@ package day17;
 
 import java.util.*;
 
-public class Cube extends Cell<Cube> {
+public class Cube extends Cell<Cube>  {
+
+    private final RuleSet<Cube> rules = new RuleSet<>();
 
     public Cube(Grid<Cube> grid, String coordinates) {
         super(grid, coordinates);
@@ -26,17 +28,9 @@ public class Cube extends Cell<Cube> {
     }
 
     public void calculateNewState() {
-        long activeNeighbors = getActiveNeighbors();
-        // If a cube is active and exactly 2 or 3 of its neighbors are also active,
-        // the cube remains active. Otherwise, the cube becomes inactive.
-        if (active && (activeNeighbors != 2 && activeNeighbors != 3)) {
-            nextState = false;
-        }
+        rules.apply(this);
 
-        // If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
-        // Otherwise, the cube remains inactive.
-        else if (!active && activeNeighbors == 3) {
-            nextState = true;
+        if (nextState) {
             grid.wakeNeighbors(this);
         }
     }

@@ -45,11 +45,15 @@ public abstract class Cell<T extends Cell<T>> {
         nextState = true;
     }
 
+    public void setFutureSuspended() {
+        nextState = false;
+    }
+
     public void transition() {
         active = nextState;
     }
 
-    public long getActiveNeighbors() {
+    public long getActiveNeighborCount() {
         return neighbors().stream().filter(Cell::isActive).count();
     }
 
@@ -63,4 +67,5 @@ public abstract class Cell<T extends Cell<T>> {
         }
         return result;
     }
+
 }
