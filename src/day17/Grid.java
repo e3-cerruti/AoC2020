@@ -3,7 +3,7 @@ package day17;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Grid<T extends Cell> {
+public class Grid<T extends Cell<T>> {
     Map<String, T> cellMap = new HashMap<>();
     private final Map<String, T> nextGeneration = new HashMap<>();
 
@@ -33,7 +33,7 @@ public class Grid<T extends Cell> {
         nextGeneration.clear();
     }
 
-    public void wakeNeighbors(Cell cell) {
+    public void wakeNeighbors(T cell) {
         nextGeneration.putAll(cell.wakeNeighbors());
     }
 }

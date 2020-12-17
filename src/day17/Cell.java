@@ -2,36 +2,36 @@ package day17;
 
 import java.util.*;
 
-public abstract class Cell {
+public abstract class Cell<T extends Cell<T>> {
     protected boolean active = false;
     protected boolean nextState = false;
 
     protected final List<String> neighborKeys;
     protected final int[] coordinates;
     protected final int dimensions;
-    protected final Grid<? extends Cell> grid;
+    protected final Grid<T> grid;
 
-    public Cell(Grid<? extends Cell> grid, String coordinates) {
+    public Cell(Grid<T> grid, String coordinates) {
         this(grid, Arrays
                 .stream(coordinates.replace("[", "").replace("]", "").split(", "))
                 .mapToInt(Integer::parseInt)
                 .toArray());
     }
 
-    public Cell(Grid<? extends Cell> grid, int[] coordinates) {
+    public Cell(Grid<T> grid, int[] coordinates) {
         this.coordinates = coordinates;
         this.dimensions = coordinates.length;
         this.grid = grid;
-        neighborKeys = neighborKeys();
+        neighborKeys = getNeighborKeys();
     }
 
-    protected abstract List<String> neighborKeys();
+    protected abstract List<String> getNeighborKeys();
 
     public abstract void calculateNewState();
 
-    public abstract <T extends Cell> Map<String, T> newNeighbors();
+    public abstract Map<String, T> newNeighbors();
 
-    public abstract <T extends Cell> Map<String, T> wakeNeighbors();
+    public abstract Map<String, T> wakeNeighbors();
 
     public static String toKey(int[] c) {
         return Arrays.toString(c);
@@ -53,8 +53,8 @@ public abstract class Cell {
         return neighbors().stream().filter(Cell::isActive).count();
     }
 
-    public List<Cell> neighbors() {
-        List<Cell> result = new ArrayList<>();
+    public List<T> neighbors() {
+        List<T> result = new ArrayList<>();
 
         for (String key : neighborKeys) {
             if (grid.getCellMap().containsKey(key)) {

@@ -2,13 +2,13 @@ package day17;
 
 import java.util.*;
 
-public class Cube extends Cell {
+public class Cube extends Cell<Cube> {
 
-    public Cube(Grid<? extends Cell> grid, String coordinates) {
+    public Cube(Grid<Cube> grid, String coordinates) {
         super(grid, coordinates);
     }
 
-    protected List<String> neighborKeys() {
+    protected List<String> getNeighborKeys() {
         List<String> result = new ArrayList<>();
         int numberNeighbors = (int) Math.pow(3, dimensions);
         int self = numberNeighbors / 2;
