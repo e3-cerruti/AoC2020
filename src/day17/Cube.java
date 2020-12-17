@@ -3,50 +3,47 @@ package day17;
 import java.util.*;
 
 public class Cube {
-    private final int x;
-    private final int y;
-    private final int z;
-
+    private final int[] coordinates;
+    private final int dimensions;
+    private final Grid grid;
+    private final List<String> neighborKeys;
     private boolean active;
     private boolean nextState = false;
 
-    private final Grid grid;
-    private final List<String> neighborKeys;
+    public Cube(Grid grid, String coordinates) {
+        this(grid, Arrays
+                .stream(coordinates.replace("[", "").replace("]", "").split(", "))
+                .mapToInt(Integer::parseInt)
+                .toArray());
+    }
 
     public Cube(Grid grid, int[] coordinates) {
-        this.x = coordinates[0];
-        this.y = coordinates[1];
-        this.z = coordinates[2];
+        this.coordinates = coordinates;
+        this.dimensions = coordinates.length;
         this.active = false;
         this.grid = grid;
         neighborKeys = neighborKeys();
     }
 
-    public Cube(Grid grid, int x, int y, int z) {
-        this(grid, new int[] {x, y, z});
-    }
-
-    public Cube(Grid grid, String key) {
-        this(grid,
-                Arrays
-                        .stream(key.split("\\."))
-                        .mapToInt(Integer::parseInt)
-                        .toArray());
-    }
-
     private List<String> neighborKeys() {
         List<String> result = new ArrayList<>();
+        int numberNeighbors = (int) Math.pow(3, dimensions);
+        int self = numberNeighbors / 2;
 
-        for (int a = x - 1; a <= x + 1; a++) {
-            for (int b = y - 1; b <= y + 1; b++) {
-                for (int c = z - 1; c <= z + 1; c++) {
-                    if (a == x && b == y && c == z) continue;
-                    String key = mapKey(a, b, c);
-                    result.add(key);
-                }
+        for (int i = 0; i < numberNeighbors; i++) {
+            if (i == self) continue;
+
+            int[] c = new int[dimensions];
+            for (int j = 0; j < dimensions; j++) {
+                c[j] = coordinates[j] + i / (int) Math.pow(3, j) % 3 - 1;
             }
+            result.add(Cube.toKey(c));
         }
         return result;
+    }
+
+    public static String toKey(int[] c) {
+        return Arrays.toString(c);
     }
 
     public void transition() {
@@ -88,10 +85,6 @@ public class Cube {
         return result;
     }
 
-    public static String mapKey(int x, int y, int z) {
-        return String.join(".", Integer.toString(x), Integer.toString(y), Integer.toString(z));
-    }
-
     public void setFutureActive() {
         nextState = true;
     }
@@ -99,7 +92,7 @@ public class Cube {
     public Map<String, Cube> newNeighbors() {
         Map<String, Cube> result = new HashMap<>();
 
-        for (String key: neighborKeys) {
+        for (String key : neighborKeys) {
             if (!grid.getCubeMap().containsKey(key)) {
                 result.put(key, new Cube(grid, key));
             }
@@ -109,7 +102,7 @@ public class Cube {
 
     public void wakeNeighbors() {
         HashMap<String, Cube> nextGeneration = new HashMap<>();
-        for (String key: neighborKeys) {
+        for (String key : neighborKeys) {
             if (!grid.cubeMap.containsKey(key)) {
                 nextGeneration.put(key, new Cube(grid, key));
             }
