@@ -1,4 +1,4 @@
-package Day16;
+package day16;
 
 import java.io.InputStream;
 import java.util.*;
