@@ -11,6 +11,10 @@ public class Grid<T extends Cell> {
         return cellMap;
     }
 
+    public long activeCells() {
+        return cellMap.values().stream().filter(T::isActive).count();
+    }
+
     public void calculateNewState() {
         Map<String, T> newNeighbors = new HashMap<>();
         for (T cell : cellMap.values()) {
@@ -29,15 +33,7 @@ public class Grid<T extends Cell> {
         nextGeneration.clear();
     }
 
-    public long activeCells() {
-        return cellMap.values().stream().filter(T::isActive).count();
-    }
-
-    public void addNextGeneration(Map<String, T> nextGeneration) {
-        this.nextGeneration.putAll(nextGeneration);
-    }
-
     public void wakeNeighbors(Cell cell) {
-        addNextGeneration(cell.wakeNeighbors());
+        nextGeneration.putAll(cell.wakeNeighbors());
     }
 }

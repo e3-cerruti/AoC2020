@@ -27,6 +27,16 @@ public abstract class Cell {
 
     protected abstract List<String> neighborKeys();
 
+    public abstract void calculateNewState();
+
+    public abstract <T extends Cell> Map<String, T> newNeighbors();
+
+    public abstract <T extends Cell> Map<String, T> wakeNeighbors();
+
+    public static String toKey(int[] c) {
+        return Arrays.toString(c);
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -37,16 +47,6 @@ public abstract class Cell {
 
     public void transition() {
         active = nextState;
-    }
-
-    public abstract void calculateNewState();
-
-    public abstract <T extends Cell> Map<String, T> newNeighbors();
-
-    public abstract <T extends Cell> Map<String, T> wakeNeighbors();
-
-    public static String toKey(int[] c) {
-        return Arrays.toString(c);
     }
 
     public long getActiveNeighbors() {
