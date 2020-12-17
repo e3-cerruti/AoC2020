@@ -45,7 +45,7 @@ public class Day17 {
 
                 if (c == '#') {
                     cube.setFutureActive();
-                    grid.wakeNeighbors(x, y, x);
+                    cube.wakeNeighbors();
                     hcube.setFutureActive();
                     hgrid.wakeNeighbors(w, x, y, z);
                 }

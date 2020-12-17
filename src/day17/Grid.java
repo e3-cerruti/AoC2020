@@ -11,20 +11,6 @@ public class Grid {
         return cubeMap;
     }
 
-    public void wakeNeighbors(int x, int y, int z) {
-        // Set of neighbors to wake on new cycle
-        for (int a = x - 1; a <= x + 1; a++) {
-            for (int b = y - 1; b < y + 1; b++) {
-                for (int c = z - 1; c <= z + 1; c++) {
-                    String key = Cube.mapKey(a, b, c);
-                    if (!cubeMap.containsKey(key)) {
-                        nextGeneration.put(key, new Cube(this, a, b, c));
-                    }
-                }
-            }
-        }
-    }
-
     public void calculateNewState() {
         Map<String, Cube> newNeighbors = new HashMap<>();
         for (Cube cube : cubeMap.values()) {
@@ -45,5 +31,9 @@ public class Grid {
 
     public long activeCubes() {
         return cubeMap.values().stream().filter(Cube::isActive).count();
+    }
+
+    public void addNextGeneration(HashMap<String, Cube> nextGeneration) {
+        this.nextGeneration.putAll(nextGeneration);
     }
 }

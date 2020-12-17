@@ -1,9 +1,6 @@
 package day17;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Cube {
     private final int x;
@@ -14,13 +11,42 @@ public class Cube {
     private boolean nextState = false;
 
     private final Grid grid;
+    private final List<String> neighborKeys;
 
-    public Cube(Grid grid, int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public Cube(Grid grid, int[] coordinates) {
+        this.x = coordinates[0];
+        this.y = coordinates[1];
+        this.z = coordinates[2];
         this.active = false;
         this.grid = grid;
+        neighborKeys = neighborKeys();
+    }
+
+    public Cube(Grid grid, int x, int y, int z) {
+        this(grid, new int[] {x, y, z});
+    }
+
+    public Cube(Grid grid, String key) {
+        this(grid,
+                Arrays
+                        .stream(key.split("\\."))
+                        .mapToInt(Integer::parseInt)
+                        .toArray());
+    }
+
+    private List<String> neighborKeys() {
+        List<String> result = new ArrayList<>();
+
+        for (int a = x - 1; a <= x + 1; a++) {
+            for (int b = y - 1; b <= y + 1; b++) {
+                for (int c = z - 1; c <= z + 1; c++) {
+                    if (a == x && b == y && c == z) continue;
+                    String key = mapKey(a, b, c);
+                    result.add(key);
+                }
+            }
+        }
+        return result;
     }
 
     public void transition() {
@@ -39,7 +65,7 @@ public class Cube {
         // Otherwise, the cube remains inactive.
         else if (!active && activeNeighbors == 3) {
             nextState = true;
-            grid.wakeNeighbors(x, y, z);
+            wakeNeighbors();
         }
     }
 
@@ -54,18 +80,11 @@ public class Cube {
     public List<Cube> neighbors() {
         List<Cube> result = new ArrayList<>();
 
-        for (int a = x - 1; a <= x + 1; a++) {
-            for (int b = y - 1; b <= y + 1; b++) {
-                for (int c = z - 1; c <= z + 1; c++) {
-                    if (a == x && b == y && c == z) continue;
-                    String key = mapKey(a, b, c);
-                    if (grid.getCubeMap().containsKey(key)) {
-                        result.add(grid.getCubeMap().get(key));
-                    }
-                }
+        for (String key : neighborKeys) {
+            if (grid.getCubeMap().containsKey(key)) {
+                result.add(grid.getCubeMap().get(key));
             }
         }
-
         return result;
     }
 
@@ -80,18 +99,21 @@ public class Cube {
     public Map<String, Cube> newNeighbors() {
         Map<String, Cube> result = new HashMap<>();
 
-        for (int a = x - 1; a <= x + 1; a++) {
-            for (int b = y - 1; b <= y + 1; b++) {
-                for (int c = z - 1; c <= z + 1; c++) {
-                    if (a == x && b == y && c == z) continue;
-                    String key = mapKey(a, b, c);
-                    if (!grid.getCubeMap().containsKey(key)) {
-                        result.put(key, new Cube(grid, a, b, c));
-                    }
-                }
+        for (String key: neighborKeys) {
+            if (!grid.getCubeMap().containsKey(key)) {
+                result.put(key, new Cube(grid, key));
             }
         }
-
         return result;
+    }
+
+    public void wakeNeighbors() {
+        HashMap<String, Cube> nextGeneration = new HashMap<>();
+        for (String key: neighborKeys) {
+            if (!grid.cubeMap.containsKey(key)) {
+                nextGeneration.put(key, new Cube(grid, key));
+            }
+        }
+        if (nextGeneration.size() > 0) grid.addNextGeneration(nextGeneration);
     }
 }
