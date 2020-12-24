@@ -34,6 +34,7 @@ public class Cup {
         lastCup = this;
     }
 
+    @SuppressWarnings("unused")
     public static void printCups(Cup start, Cup currentCup) {
         Cup nextCup = start;
         do {
@@ -120,6 +121,7 @@ public class Cup {
         currentCup.nextCup = nextCup;
     }
 
+    @SuppressWarnings("unused")
     public void printDestination() {
         System.out.format("Destination: %d\n", label);
     }
